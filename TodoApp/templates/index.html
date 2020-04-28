@@ -13,6 +13,22 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            width: 200px;
+        }
+
+        li{
+            clear: both;
+        }
+
+        li button{
+            -webkit-appearance: none;
+            background: none;
+            border: none;
+            outline: none;
+            color: red;
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -21,10 +37,14 @@
         <input type="text" name="description" id="description">
         <input type="submit" value="Create">
     </form>
-    <div id="error" class="hidden">Ssomething went wrong!</div>
+    <div id="error" class="hidden">Something went wrong!</div>
     <ul id="todos">
         {% for d in data %}
-        <li><input class='checkbox-checked' data-id="{{ d.id }}" type="checkbox" name="completed" id="completed" {% if d.completed %} checked {% endif %}>{{d.description}}</li>
+        <li>
+            <input class='checkbox-checked' data-id="{{ d.id }}" type="checkbox" name="completed" id="completed" {% if d.completed %} checked {% endif %}>
+            {{d.description}}
+            <button class="delete-button" data-id="{{ d.id }}">&cross;</button>
+        </li>
         {% endfor %}
     </ul>
 </body>
@@ -70,6 +90,16 @@
         }).catch(function(){
             document.getElementById('error').className = '';
         })
+    }
+    const deleteBtns = document.querySelectorAll('.delete-button');
+    for (let i = 0; i < deleteBtns.length; i++) {
+        const btn = deleteBtns[i];
+        btn.onclick = function(e) {
+            const todoId = e.target.dataset['id'];
+            fetch('/todos/' + todoId, {
+                method: 'DELETE'
+            });
+        }
     }
 </script>
 </html>
